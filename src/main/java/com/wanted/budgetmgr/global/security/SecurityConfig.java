@@ -31,6 +31,13 @@ public class SecurityConfig {
                 .requestMatchers("/signup","/login","/user").permitAll()
                 .anyRequest().authenticated()
                 .and()
+                .formLogin()
+                .loginPage("/login")
+                .and()
+                .logout()
+                .logoutSuccessUrl("/login")
+                .invalidateHttpSession(true)
+                .and()
                 .csrf().disable()
                 .build();
     }
