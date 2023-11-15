@@ -38,7 +38,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login")
                 .invalidateHttpSession(true)
                 .and()
-                .csrf().disable()
+                .csrf().disable() //csrf 비활성화 (학습용 프로젝트이므로  편의를 위해 임시설정)
                 .build();
     }
 
@@ -53,6 +53,7 @@ public class SecurityConfig {
                     .build();
     }
 
+    // pw 인코더로 사용할 빈 등록
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
