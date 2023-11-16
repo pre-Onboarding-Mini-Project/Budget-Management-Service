@@ -19,9 +19,13 @@ public class JwtTokenProvider {
     @Value("${jwt.expiration}")
     private Long expiration;
 
-    public String createToken(String email) {
+    public String createAccessToken(String email) {
+        return createToken(email, expiration);
+    }
+
+    public String createToken(String email, Long tokenExpiration) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + expiration);
+        Date expiryDate = new Date(now.getTime() + tokenExpiration);
 
         return Jwts.builder()
                 .setSubject(email)
@@ -48,12 +52,23 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder()
-                .setSigningKey(getSignKey(secret))
-                .build()
-                .parseClaimsJws(token);
+                    .setSigningKey(getSignKey(secret))
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    // 토큰이 만료되었는지 확인
+    public boolean isTokenExpired(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(getSignKey(secret))
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        return claims.getExpiration().before(new Date());
     }
 }
