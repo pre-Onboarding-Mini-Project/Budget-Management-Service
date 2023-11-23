@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,17 @@ public class UserController {
     public ResponseEntity<String> login(@RequestBody LoginDTO loginDTO) {
         String token = userService.login(loginDTO);
         return ResponseEntity.ok("로그인에 성공했습니다.\naccessToken : " + token);
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null) {
+            SecurityContextHolder.getContext().setAuthentication(null);
+        }
+
+        return "redirect:/";
     }
 
     @PostMapping("/refresh")

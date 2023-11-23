@@ -35,7 +35,13 @@ public class SecurityConfig {
             .anyRequest().authenticated()
             .and()
             .csrf().disable() //csrf 비활성화 (학습용 프로젝트이므로 편의를 위해 임시설정)
-            .apply(jwtConfigurer());
+            .apply(jwtConfigurer())
+            .and()
+            .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID");
 
         return http.build();
     }
